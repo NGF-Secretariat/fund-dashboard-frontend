@@ -8,10 +8,8 @@ export const loadAccount = async (categoryId: string): Promise<any> => {
         let token = '';
         if (typeof window !== 'undefined') {
             token = localStorage.getItem('token') || '';
-            console.log('token', token);
             
         }
-        console.log('token gotten ', token);
         
         const response = await fetch(`${BASE_URL}/dashboard/grouped-accounts/${categoryId}`, {
             method: 'GET',

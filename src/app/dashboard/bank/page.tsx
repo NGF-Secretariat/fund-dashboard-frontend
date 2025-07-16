@@ -5,8 +5,8 @@ import React from "react";
 
 export default function BankPage() {
   return (
-    <div className="p-4">
-      <h1 className="text-lg font-bold mb-4 text-black">Bank Management</h1>
+    <div className="">
+      <h3 className="text-lg font-bold mb-4 text-black">Bank Management</h3>
       <BankTableManager />
     </div>
   );
