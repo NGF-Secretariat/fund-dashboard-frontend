@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { login } from "../lib/auth";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { login } from "./lib/auth";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");

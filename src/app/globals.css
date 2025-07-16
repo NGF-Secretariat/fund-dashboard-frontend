@@ -3,11 +3,21 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --ngfGreenLight: #DCF5DA;
+  --myGreenDark: #06923E;
+  --borderColor: #F36F2E;
+  --dashHover: #009B72;
+  --textRed: #F14810;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-foreground: var(--ngfGreenLight);
+  --color-myGreenDark: var(--myGreenDark);
+  --color-ngfGreenLight: var(--ngfGreenLight);
+  --color-borderColor: var(--borderColor);
+  --color-dashHover: var(--dashHover);
+  --color-textRed: var(--textRed);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
