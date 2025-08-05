@@ -32,7 +32,7 @@ const BalanceCard: React.FC<BalanceCardProps> = ({ icon, amount, label, currency
 
       {/* Amount & Label */}
       <div className="space-y-1">
-        <p className="text-lg font-bold tracking-wide leading-tight">
+        <p className="text-sm font-light italic tracking-wide leading-tight">
           {symbol} {formattedAmount}
         </p>
         <p className="text-sm text-white/80 font-medium">{label}</p>
