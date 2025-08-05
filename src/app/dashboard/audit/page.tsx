@@ -5,7 +5,7 @@ import React from "react";
 
 export default function AuditPage() {
   return (
-    <div className="p-4">
+    <div>
       <h1 className="text-lg font-bold mb-4 text-black">AuditLog  Management</h1>
       <AuditLogTable />
     </div>

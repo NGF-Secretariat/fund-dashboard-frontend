@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import React from "react";
 
@@ -12,12 +14,13 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   fullscreen = true,
   logoSrc = "/logo.png",
 }) => {
+  const containerClass = fullscreen
+    ? "fixed inset-0 bg-black/30 z-50"
+    : "py-10";
+
   return (
     <div
-      className={`
-        ${fullscreen ? "fixed inset-0 bg-black/30 z-50" : "py-10"}
-        flex items-center justify-center w-full
-      `}
+      className={`w-full flex items-center justify-center ${containerClass}`}
     >
       <div className="flex flex-col items-center justify-center animate-pulse space-y-4">
         <Image
@@ -29,7 +32,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
           priority
         />
         {text && (
-          <span className="text-base sm:text-lg font-semibold text-textRed text-center">
+          <span className="text-base sm:text-lg font-semibold text-textRed text-center capitalize">
             {text}
           </span>
         )}

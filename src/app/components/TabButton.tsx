@@ -11,7 +11,7 @@ export const TabButton: React.FC<TabButtonProps> = ({ icon, label, onClick, acti
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-2 px-4 py-2 rounded-md transition border border-borderColor
+      className={`flex items-center gap-2 px-4 py-2 rounded-md transition border border-borderColor cursor-pointer
         ${active ? 'bg-textRed text-gray-200 font-bold' : 'text-textRed hover:bg-gray-100'}`}
     >
       {icon}

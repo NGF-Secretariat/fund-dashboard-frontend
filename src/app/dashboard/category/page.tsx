@@ -4,7 +4,7 @@ import React from "react";
 
 export default function CategoryPage() {
   return (
-    <div className="p-4">
+    <div>
       <h1 className="text-lg font-bold mb-4 text-black">Category Management</h1>
       <CategoryManager />
     </div>

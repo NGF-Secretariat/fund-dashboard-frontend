@@ -1,12 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ConfirmPrompt from "./ConfirmPrompt";
+import { checkLoggedIn } from "../lib/util";
 
 export default function Topbar({ collapsed }: { collapsed: boolean }) {
   const [showConfirm, setShowConfirm] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
 
   const handleLogout = () => {
     setShowConfirm(true);
@@ -21,11 +23,6 @@ export default function Topbar({ collapsed }: { collapsed: boolean }) {
     setShowConfirm(false);
   };
 
-  const user =
-    typeof window !== "undefined"
-      ? localStorage.getItem("user") ?? '"NGF User"'
-      : '"NGF User"';
-
   const currentDate = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -34,10 +31,17 @@ export default function Topbar({ collapsed }: { collapsed: boolean }) {
   });
   const router = useRouter();
 
+  useEffect(() => {
+    const token = checkLoggedIn();
+    if (token) {
+      setUserName(token.name);
+    }
+  }, [router]);
+
   const logout = () => {
-      localStorage.clear();
-      toast.success("Logged out successfully ✅");
-      router.push("/login");
+    localStorage.clear();
+    toast.success("Logged out successfully");
+    router.push("/");
   };
 
   return (
@@ -45,7 +49,7 @@ export default function Topbar({ collapsed }: { collapsed: boolean }) {
       <div className="h-16 bg-white border-b shadow flex  items-center px-4 transition-all duration-300">
         <div className="px-5">
           <h2 className="text-lg font-semibold text-black capitalize">
-            Hi, {JSON.parse(user).name}👋🏽
+            {userName ? `Hi, ${userName} 👋🏽` : "Welcome 👋🏽"}
           </h2>
           <h2 className="text-sm font-semibold text-black">{currentDate}</h2>
         </div>

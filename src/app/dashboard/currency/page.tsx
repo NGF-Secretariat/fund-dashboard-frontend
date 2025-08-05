@@ -1,11 +1,11 @@
-// /app/dashboard/bank/page.tsx
-
-import CurrencyManager from "@/app/components/Currencymanager";
+import CurrencyManager from "@/app/components/CurrencyManager";
 import React from "react";
+import { Toaster } from "react-hot-toast";
 
 export default function CurrencyPage() {
   return (
-    <div className="p-4">
+    <div>
+      <Toaster position="top-right" />
       <h1 className="text-lg font-bold mb-4 text-black">Currency Management</h1>
       <CurrencyManager />
     </div>
