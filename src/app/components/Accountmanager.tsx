@@ -12,12 +12,13 @@ import { usePathname } from "next/navigation";
 import { loadBank } from "../lib/bank";
 import { Bank } from "./BankManager";
 import { loadCurrency } from "../lib/currency";
-import { Currency } from "./CurrencyManager";
+// import { Currency } from "./CurrencyManager";
 import toast from "react-hot-toast";
 import { loadACategory } from "../lib/category";
 import { Category } from "./CategoryManager";
 import ConfirmPrompt from "./ConfirmPrompt";
 import Modal from "./Modal";
+import { Currency } from "./Currencymanager";
 
 
 export interface Account {

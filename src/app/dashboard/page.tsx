@@ -1,7 +1,13 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
-import { FaChartBar, FaWallet, FaArrowDown, FaArrowUp, FaMoneyBillWave } from "react-icons/fa";
+import {
+  FaChartBar,
+  FaWallet,
+  FaArrowDown,
+  FaArrowUp,
+  FaMoneyBillWave,
+} from "react-icons/fa";
 import { TabButton } from "../components/TabButton";
 import { AccordionItem } from "../components/AccordionItem";
 import { loadAccount } from "../lib/dashboard";
@@ -32,19 +38,21 @@ export default function DashboardHome() {
 
   const getAccountArray = (type: "secretariat" | "project") => {
     return data?.data?.[type]
-      ? Object.entries(data.data[type]).map(([bank, currencies]) => ({ bank, currencies }))
+      ? Object.entries(data.data[type])
+          .map(([bank, currencies]) => ({ bank, currencies }))
+          .sort((a, b) => a.bank.localeCompare(b.bank)) // ✅ alphabetical
       : [];
   };
 
-  const renderAccordionItems = (accountArray: any[]) => (
+  const renderAccordionItems = (accountArray: any[]) =>
     accountArray.map((item, idx) => (
       <AccordionItem
         key={item.bank}
         title={item.bank}
         isOpen={openIndex === idx}
         onToggle={() => toggleAccordion(idx)}
-        content={
-          Object.entries(item.currencies as Record<string, unknown>).map(([currency, accounts]) => (
+        content={Object.entries(item.currencies as Record<string, unknown>).map(
+          ([currency, accounts]) =>
             Array.isArray(accounts) ? (
               <div
                 key={currency}
@@ -53,52 +61,55 @@ export default function DashboardHome() {
                 <h4 className="font-semibold text-textRed mb-3 text-sm uppercase tracking-wider">
                   {currency}
                 </h4>
-                {accounts.map((account: any) => (
-                  <div
-                    key={account.id}
-                    className="mb-5 space-y-3 border border-emerald-300 py-5 rounded-lg px-4 bg-emerald-50"
-                  >
-                    <p className="text-sm text-gray-800 font-medium text-center">
-                      <span className="font-semibold">Bank:</span> {item.bank} &nbsp;|&nbsp;
-                      <span className="font-semibold">Name:</span> {account.name} &nbsp;|&nbsp;
-                      <span className="font-semibold">No:</span> {account.accountNumber}
-                    </p>
+                {[...accounts]
+                  .sort((a: any, b: any) => a.name.localeCompare(b.name))
+                  .map((account: any) => (
+                    <div
+                      key={account.id}
+                      className="mb-5 space-y-3 border border-emerald-300 py-5 rounded-lg px-4 bg-emerald-50"
+                    >
+                      <p className="text-sm text-gray-800 font-medium text-center">
+                        <span className="font-semibold">Bank:</span> {item.bank}{" "}
+                        &nbsp;|&nbsp;
+                        <span className="font-semibold">Name:</span>{" "}
+                        {account.name} &nbsp;|&nbsp;
+                        <span className="font-semibold">No:</span>{" "}
+                        {account.accountNumber}
+                      </p>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                      <BalanceCard
-                        amount={account.previousBalance}
-                        icon={<FaMoneyBillWave />}
-                        label="Prev Bal"
-                        currency={currency}
-                      />
-                      <BalanceCard
-                        amount={account.inflow}
-                        icon={<FaArrowDown />}
-                        label="Inflow"
-                        currency={currency}
-                      />
-                      <BalanceCard
-                        amount={account.outflow}
-                        icon={<FaArrowUp />}
-                        label="Outflow"
-                        currency={currency}
-                      />
-                      <BalanceCard
-                        amount={account.currentBalance}
-                        icon={<FaMoneyBillWave />}
-                        label="Cur Bal"
-                        currency={currency}
-                      />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        <BalanceCard
+                          amount={account.previousBalance}
+                          icon={<FaMoneyBillWave />}
+                          label="Prev Bal"
+                          currency={currency}
+                        />
+                        <BalanceCard
+                          amount={account.inflow}
+                          icon={<FaArrowDown />}
+                          label="Inflow"
+                          currency={currency}
+                        />
+                        <BalanceCard
+                          amount={account.outflow}
+                          icon={<FaArrowUp />}
+                          label="Outflow"
+                          currency={currency}
+                        />
+                        <BalanceCard
+                          amount={account.currentBalance}
+                          icon={<FaMoneyBillWave />}
+                          label="Cur Bal"
+                          currency={currency}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             ) : null
-          ))
-        }
+        )}
       />
-    ))
-  );
+    ));
 
   const tabs = [
     { label: "Secretariat", value: "secretariat", icon: <FaChartBar /> },
@@ -108,8 +119,12 @@ export default function DashboardHome() {
   return (
     <div className="p-6 sm:p-10 space-y-8 min-h-screen">
       <div>
-        <h3 className="text-2xl sm:text-3xl font-bold text-textRed mb-1">Fund Dashboard</h3>
-        <p className="text-gray-600 text-sm">Track balances, inflows, and outflows.</p>
+        <h3 className="text-2xl sm:text-3xl font-bold text-textRed mb-1">
+          Fund Dashboard
+        </h3>
+        <p className="text-gray-600 text-sm">
+          Track balances, inflows, and outflows.
+        </p>
       </div>
 
       <div className="flex flex-wrap gap-3">
