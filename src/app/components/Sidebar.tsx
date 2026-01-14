@@ -13,6 +13,7 @@ import {
   FaChevronLeft,
   FaChevronRight,
   FaBars,
+  FaWindowClose,
 } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 import { checkLoggedIn } from "../lib/util";
@@ -20,11 +21,14 @@ import { checkLoggedIn } from "../lib/util";
 export default function Sidebar({
   collapsed,
   setCollapsed,
+  mobileOpen,
+  setMobileOpen,
 }: {
   collapsed: boolean;
   setCollapsed: (v: boolean) => void;
+  mobileOpen: boolean;
+  setMobileOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [role, setRole] = useState<string | null>(null);
   const pathname = usePathname();
 
@@ -82,11 +86,11 @@ export default function Sidebar({
     <>
       {/* Mobile Hamburger Button */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-myGreenDark text-white p-2 rounded"
+        className="md:hidden fixed top-4 right-4 z-50 bg-myGreenDark text-white p-2 rounded"
         onClick={() => setMobileOpen(!mobileOpen)}
         aria-label="Open sidebar"
       >
-        <FaBars size={24} />
+        <FaWindowClose size={24} />
       </button>
 
       {/* Sidebar */}
@@ -109,7 +113,7 @@ export default function Sidebar({
         </button>
 
         {/* Logo */}
-        <div className={`flex ${collapsed ? "py-2" : "py-5"}`}>
+        <div className={`flex ${collapsed ? "py-2" : "py-5  "}`}>
           <Image
             src="/logo.png"
             alt="NGF Logo"
@@ -130,7 +134,8 @@ export default function Sidebar({
               .map((item) => {
                 const isActive =
                   pathname === item.href ||
-                  (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                  (item.href !== "/dashboard" &&
+                    pathname.startsWith(item.href));
                 return (
                   <Link
                     key={item.label}

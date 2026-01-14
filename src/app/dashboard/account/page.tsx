@@ -1,5 +1,4 @@
 
-// import AccountManager from "@/app/components/AccountManager";
 import AccountManager from "@/app/components/Accountmanager";
 import React from "react";
 

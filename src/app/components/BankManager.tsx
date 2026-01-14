@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import LoadingScreen from "./LoadingScreen";
 import ConfirmPrompt from "./ConfirmPrompt";
 import Modal from "./Modal";
+import { FaSlidersH } from "react-icons/fa";
 
 export interface Bank {
   id: number;
@@ -47,7 +48,10 @@ export default function BankTableManager() {
     }
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setDropdownOpenId(null);
       }
     };
@@ -136,9 +140,15 @@ export default function BankTableManager() {
           <table className="w-full table-auto border border-gray-200 bg-white">
             <thead className="bg-green-100">
               <tr>
-                <th className="px-4 py-3 text-left font-semibold text-sm text-gray-700">S/N</th>
-                <th className="px-4 py-3 text-left font-semibold text-sm text-gray-700">Bank Name</th>
-                <th className="px-4 py-3 text-center font-semibold text-sm text-gray-700">Actions</th>
+                <th className="px-4 py-3 text-left font-semibold text-sm text-gray-700">
+                  S/N
+                </th>
+                <th className="px-4 py-3 text-left font-semibold text-sm text-gray-700">
+                  Bank Name
+                </th>
+                <th className="px-4 py-3 text-center font-semibold text-sm text-gray-700">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -151,7 +161,7 @@ export default function BankTableManager() {
                       onClick={() => toggleDropdown(bank.id)}
                       className="text-lg font-bold px-2 text-green-800 hover:text-green-600"
                     >
-                      ⋮
+                      <FaSlidersH />
                     </button>
 
                     {dropdownOpenId === bank.id && (
@@ -193,7 +203,11 @@ export default function BankTableManager() {
         </div>
       </div>
 
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingId ? "Edit Bank" : "Add New Bank"}>
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editingId ? "Edit Bank" : "Add New Bank"}
+      >
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -202,7 +216,9 @@ export default function BankTableManager() {
           className="space-y-4"
         >
           <div>
-            <label className="block text-sm font-medium mb-1 text-black">Bank Name</label>
+            <label className="block text-sm font-medium mb-1 text-black">
+              Bank Name
+            </label>
             <input
               type="text"
               value={name}

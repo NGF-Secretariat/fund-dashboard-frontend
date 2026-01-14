@@ -7,6 +7,7 @@ import LoadingScreen from "./LoadingScreen";
 import toast from "react-hot-toast";
 import ConfirmPrompt from "./ConfirmPrompt";
 import Modal from "./Modal";
+import { FaSlidersH } from "react-icons/fa";
 
 
 export interface Currency {
@@ -161,7 +162,8 @@ export default function CurrencyManager() {
                       onClick={() => toggleDropdown(currency.id)}
                       className="text-lg font-bold px-2 text-green-800 hover:text-green-600"
                     >
-                      ⋮
+                                             <FaSlidersH />
+                      
                     </button>
                     {dropdownOpenId === currency?.id && (
                       <div

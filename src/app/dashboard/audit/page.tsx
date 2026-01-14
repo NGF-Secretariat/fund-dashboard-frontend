@@ -1,4 +1,3 @@
-// /app/dashboard/bank/page.tsx
 
 import AuditLogTable from "@/app/components/AuditManager";
 import React from "react";

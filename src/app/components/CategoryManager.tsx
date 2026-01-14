@@ -12,7 +12,7 @@ import LoadingScreen from "./LoadingScreen";
 import toast from "react-hot-toast";
 import ConfirmPrompt from "./ConfirmPrompt";
 import Modal from "./Modal";
-
+import { FaSlidersH } from "react-icons/fa";
 
 export interface Category {
   id: number;
@@ -32,7 +32,6 @@ export default function CategoryManager() {
   const [showConfirm, setShowConfirm] = useState(false);
   const mounted = useRef(false);
   const [modalOpen, setModalOpen] = useState(false);
-
 
   const fetchData = async () => {
     try {
@@ -98,7 +97,6 @@ export default function CategoryManager() {
     setEditingId(category.id);
     setDropdownOpenId(null);
     setModalOpen(true);
-
   };
 
   const confirmDelete = async () => {
@@ -131,13 +129,10 @@ export default function CategoryManager() {
     <>
       <div className="mx-auto text-black">
         <div className="flex justify-between items-center mb-4">
-
-          <h2 className="text-lg font-bold mb-4 text-green-800">
-            Category
-          </h2>
+          <h2 className="text-lg font-bold mb-4 text-green-800">Category</h2>
           <button
             onClick={() => {
-              setForm({ name: "" })
+              setForm({ name: "" });
               setEditingId(null);
               setModalOpen(true);
             }}
@@ -173,7 +168,7 @@ export default function CategoryManager() {
                       onClick={() => toggleDropdown(cat.id)}
                       className="text-xl font-bold hover:text-gray-700"
                     >
-                      ⋮
+                      <FaSlidersH />
                     </button>
                     {dropdownOpenId === cat.id && (
                       <div
@@ -213,7 +208,11 @@ export default function CategoryManager() {
         </div>
       </div>
 
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingId ? "Edit" : "Add"}>
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editingId ? "Edit" : "Add"}
+      >
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -222,8 +221,10 @@ export default function CategoryManager() {
           className="space-y-4 text-black"
         >
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-6">
-          <div>
-              <label className="block text-sm font-medium mb-1">Category name</label>
+            <div>
+              <label className="block text-sm font-medium mb-1">
+                Category name
+              </label>
               <input
                 type="text"
                 name="name"
@@ -234,15 +235,14 @@ export default function CategoryManager() {
               />
             </div>
           </div>
-            <div className="flex justify-end">
-              <button
-                onClick={handleSubmit}
-                className="bg-textRed text-white px-4 py-2 mt-6 rounded hover:bg-red-600"
-              >
-                {editingId ? "Update" : "Add"}
-              </button>
-            </div>
-
+          <div className="flex justify-end">
+            <button
+              onClick={handleSubmit}
+              className="bg-textRed text-white px-4 py-2 mt-6 rounded hover:bg-red-600"
+            >
+              {editingId ? "Update" : "Add"}
+            </button>
+          </div>
         </form>
       </Modal>
 

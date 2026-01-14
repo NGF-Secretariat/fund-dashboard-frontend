@@ -1,5 +1,3 @@
-// /app/dashboard/bank/page.tsx
-
 import TransactionManager from "@/app/components/TransactionManager";
 import React from "react";
 import { Toaster } from "react-hot-toast";

@@ -19,6 +19,8 @@ import { Category } from "./CategoryManager";
 import ConfirmPrompt from "./ConfirmPrompt";
 import Modal from "./Modal";
 import { Currency } from "./Currencymanager";
+import { FaMarsAndVenus } from "react-icons/fa6";
+import { FaClosedCaptioning, FaDotCircle, FaSlidersH } from "react-icons/fa";
 
 
 export interface Account {
@@ -233,7 +235,7 @@ export default function AccountManager() {
       <div className="mx-auto text-black">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold mb-4 text-green-800">
-            Accounts Manager
+            Accounts
           </h2>
           <button
             onClick={() => {
@@ -275,7 +277,7 @@ export default function AccountManager() {
                 <th className="px-4 py-3 text-gray-700">Currency</th>
                 <th className="px-4 py-3 text-gray-700">Category</th>
                 <th className="px-4 py-3 text-gray-700 w-[5%] text-center">
-                  ⋮
+                  Action
                 </th>
               </tr>
             </thead>
@@ -293,7 +295,7 @@ export default function AccountManager() {
                       onClick={() => toggleDropdown(acc.id)}
                       className="text-xl font-bold hover:text-gray-700"
                     >
-                      ⋮
+                       <FaSlidersH />
                     </button>
                     {dropdownOpenId === acc.id && (
                       <div

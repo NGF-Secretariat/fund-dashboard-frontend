@@ -11,10 +11,10 @@ import {
 import LoadingScreen from "./LoadingScreen";
 import toast from "react-hot-toast";
 import { loadAccount } from "../lib/account";
-import { Account } from "./AccountManager";
 import ConfirmPrompt from "./ConfirmPrompt";
 import Modal from "./Modal";
-
+import { Account } from "./Accountmanager";
+import { FaSlidersH } from "react-icons/fa";
 
 export interface Transaction {
   id: number;
@@ -175,7 +175,6 @@ export default function TransactionManager() {
     setEditingId(txn.id);
     setDropdownOpenId(null);
     setModalOpen(true);
-
   };
 
   const confirmDelete = async () => {
@@ -204,7 +203,7 @@ export default function TransactionManager() {
     setDropdownOpenId(dropdownOpenId === id ? null : id);
   };
 
-  const filteredTransactions = transactions.filter(
+  const filteredTransactions = transactions?.filter(
     (txn) =>
       txn.description.toLowerCase().includes(search.toLowerCase()) ||
       txn.account.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -215,9 +214,7 @@ export default function TransactionManager() {
     <>
       <div className="mx-auto text-black">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold mb-4 text-green-800">
-            Transaction
-          </h2>
+          <h2 className="text-lg font-bold mb-4 text-green-800">Transaction</h2>
           <button
             onClick={() => {
               setForm({
@@ -225,7 +222,7 @@ export default function TransactionManager() {
                 type: "",
                 amount: 0,
                 description: "",
-              })
+              });
               setEditingId(null);
               setModalOpen(true);
             }}
@@ -271,7 +268,7 @@ export default function TransactionManager() {
                       onClick={() => toggleDropdown(txn.id)}
                       className="text-xl font-bold hover:text-gray-700"
                     >
-                      ⋮
+                      <FaSlidersH />
                     </button>
                     {dropdownOpenId === txn.id && (
                       <section
@@ -312,7 +309,11 @@ export default function TransactionManager() {
         </div>
       </div>
 
-      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editingId ? "Edit" : "Add"}>
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={editingId ? "Edit" : "Add"}
+      >
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -331,7 +332,7 @@ export default function TransactionManager() {
                 onChange={handleChange}
                 className="border border-green-300 bg-green-50 px-3 py-2 rounded-md w-full focus:ring-2 focus:ring-green-500"
               >
-                {accounts.map((acc) => (
+                {accounts?.map((acc) => (
                   <option key={acc.id} value={acc.id}>
                     {acc.name}
                   </option>

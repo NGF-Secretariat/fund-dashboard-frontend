@@ -3,14 +3,64 @@ import toast from "react-hot-toast";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:4000';
 
+const getToken = (): string => {
+    if (typeof window !== 'undefined') {
+        return localStorage.getItem('token') || '';
+    }
+    return '';
+};
+
 export const loadTransaction = async (): Promise<any> => {
     try {
-        let token = '';
-        if (typeof window !== 'undefined') {
-            token = localStorage.getItem('token') || '';
+        const token = getToken();
+        const response = await fetch(`${BASE_URL}/transactions`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        let data;
+        try {
+            data = await response.json();
+        } catch (jsonError) {
+            return {
+                success: false,
+                message: 'Invalid server response. Please try again.',
+            };
         }
 
-        const response = await fetch(`${BASE_URL}/transactions`, {
+        if (!response) {
+            return {
+                success: false,
+                message: data?.message || 'failed',
+            };
+        }
+
+        return {
+            success: true,
+            data,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: 'Network error. Please try again.',
+        };
+    }
+};
+
+export const loadTransactionCondition = async (startDate: string, endDate: string, type?: string): Promise<any> => {
+
+    try {
+        const token = getToken();
+        const url = new URL(`${BASE_URL}/transactions`);
+        url.searchParams.append('startDate', startDate);
+        url.searchParams.append('endDate', endDate);
+        if (type) url.searchParams.append('type', type);
+
+        const response = await fetch(url.toString(), {
+
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,11 +99,7 @@ export const loadTransaction = async (): Promise<any> => {
 
 export const createTransaction = async (form: { accountId: number, type: string, amount: number, description: string }): Promise<any> => {
     try {
-        let token = '';
-        if (typeof window !== 'undefined') {
-            token = localStorage.getItem('token') || '';
-        }
-
+        const token = getToken();
         const response = await fetch(`${BASE_URL}/transactions`, {
             method: 'POST',
             headers: {
@@ -93,10 +139,7 @@ export const createTransaction = async (form: { accountId: number, type: string,
 };
 export const updateTransaction = async (id: string | number, form: { accountId: number, type: string, amount: number, description: string }): Promise<any> => {
     try {
-        let token = '';
-        if (typeof window !== 'undefined') {
-            token = localStorage.getItem('token') || '';
-        }
+        const token = getToken();
 
         const response = await fetch(`${BASE_URL}/transactions/${id}`, {
             method: 'PATCH',
@@ -139,10 +182,7 @@ export const updateTransaction = async (id: string | number, form: { accountId: 
 
 export const deleteTransaction = async (id: string | number): Promise<any> => {
     try {
-        let token = '';
-        if (typeof window !== 'undefined') {
-            token = localStorage.getItem('token') || '';
-        }
+        const token = getToken();
 
         const response = await fetch(`${BASE_URL}/transactions/${id}`, {
             method: 'DELETE',

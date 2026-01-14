@@ -1,4 +1,4 @@
-import CurrencyManager from "@/app/components/CurrencyManager";
+import CurrencyManager from "@/app/components/Currencymanager";
 import React from "react";
 import { Toaster } from "react-hot-toast";
 
