@@ -167,6 +167,7 @@ export default function DashboardHome() {
                   isOpen={openModal}
                   onClose={() => setOpenModal(false)}
                   title="Account Summary"
+                  size="md"
                   children={
                     <>
                       {loading ? (
@@ -192,8 +193,8 @@ export default function DashboardHome() {
                             <h4 className="text-md font-semibold">
                               Transaction Summary:
                               <span className="ml-2 font-normal">
-                                {summaryData?.account?.bank} |{" "}
-                                {summaryData?.account?.accountNumber} |{" "}
+                                {summaryData?.account?.bank} |
+                                {summaryData?.account?.accountNumber} |
                                 {summaryData?.account?.currency}
                               </span>
                             </h4>

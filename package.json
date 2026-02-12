@@ -5,11 +5,11 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
+    "start": "serve out",
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "15.3.5",
+    "next": "15.5.12",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
@@ -20,6 +20,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "serve": "^14.2.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
