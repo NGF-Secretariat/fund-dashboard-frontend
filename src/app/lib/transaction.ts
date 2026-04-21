@@ -10,10 +10,15 @@ const getToken = (): string => {
     return '';
 };
 
-export const loadTransaction = async (): Promise<any> => {
+export const loadTransaction = async (params: { page?: number; limit?: number; search?: string } = {}): Promise<any> => {
     try {
         const token = getToken();
-        const response = await fetch(`${BASE_URL}/transactions`, {
+        const query = new URLSearchParams();
+        if (params.page !== undefined) query.append('page', String(params.page));
+        if (params.limit !== undefined) query.append('limit', String(params.limit));
+        if (params.search) query.append('search', params.search);
+
+        const response = await fetch(`${BASE_URL}/transactions?${query.toString()}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,7 +55,7 @@ export const loadTransaction = async (): Promise<any> => {
     }
 };
 
-export const loadTransactionCondition = async (startDate: string, endDate: string, type?: string): Promise<any> => {
+export const loadTransactionCondition = async (startDate: string, endDate: string, type?: string, page?: number, limit?: number): Promise<any> => {
 
     try {
         const token = getToken();
@@ -58,6 +63,8 @@ export const loadTransactionCondition = async (startDate: string, endDate: strin
         url.searchParams.append('startDate', startDate);
         url.searchParams.append('endDate', endDate);
         if (type) url.searchParams.append('type', type);
+        if (page !== undefined) url.searchParams.append('page', String(page));
+        if (limit !== undefined) url.searchParams.append('limit', String(limit));
 
         const response = await fetch(url.toString(), {
 

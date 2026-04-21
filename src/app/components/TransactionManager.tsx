@@ -77,6 +77,9 @@ export default function TransactionManager() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [dropdownOpenId, setDropdownOpenId] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(50);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const pathname = usePathname();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -85,11 +88,20 @@ export default function TransactionManager() {
   const mounted = useRef(false);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = async (p = page, l = limit) => {
     try {
       setLoading(true);
-      const res = await loadTransaction();
-      setTransactions(res.data.data);
+      const res = await loadTransaction({ page: p, limit: l, search });
+      if (res.success) {
+        setTransactions(res.data.data);
+        if (res.data.meta) {
+          setTotalPages(res.data.meta.lastPage || res.data.meta.totalPages || 1);
+        } else if (res.data.totalPages) {
+          setTotalPages(res.data.totalPages);
+        }
+      } else {
+        toast.error(res.message || "Failed to load transactions.");
+      }
     } catch (error) {
       toast.error("Failed to load transactions. Please try again.");
     } finally {
@@ -112,8 +124,11 @@ export default function TransactionManager() {
   };
 
   useEffect(() => {
+    fetchData();
+  }, [page, limit, pathname]);
+
+  useEffect(() => {
     if (!mounted.current) {
-      fetchData();
       load();
       mounted.current = true;
     }
@@ -128,7 +143,7 @@ export default function TransactionManager() {
     };
     document.addEventListener("mousedown", closeOutside);
     return () => document.removeEventListener("mousedown", closeOutside);
-  }, [pathname]);
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -203,12 +218,16 @@ export default function TransactionManager() {
     setDropdownOpenId(dropdownOpenId === id ? null : id);
   };
 
-  const filteredTransactions = transactions?.filter(
-    (txn) =>
-      txn.description.toLowerCase().includes(search.toLowerCase()) ||
-      txn.account.name.toLowerCase().includes(search.toLowerCase()) ||
-      txn.amount.toString().includes(search)
-  );
+  // Server-side filtering is preferred with pagination
+  const handleSearch = () => {
+    if (page !== 1) {
+      setPage(1);
+    } else {
+      fetchData();
+    }
+  };
+
+  const filteredTransactions = transactions;
 
   return (
     <>
@@ -232,14 +251,21 @@ export default function TransactionManager() {
           </button>
         </div>
 
-        <div className="flex justify-end items-center mb-4">
+        <div className="flex justify-end items-center mb-4 gap-2">
           <input
             type="text"
             placeholder="Search by name or account name or description..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border border-green-300 bg-green-50 px-3 py-2 rounded-md focus:ring-2 focus:ring-green-500 w-full max-w-xs"
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            className="border border-green-300 bg-green-50 px-3 py-2 rounded-md focus:ring-2 focus:ring-green-500 w-full max-w-xs transition-all"
           />
+          <button
+            onClick={handleSearch}
+            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors shadow-sm font-medium"
+          >
+            Search
+          </button>
         </div>
 
         {/* Table */}
@@ -258,7 +284,7 @@ export default function TransactionManager() {
             <tbody>
               {filteredTransactions?.map((txn, index) => (
                 <tr key={txn.id} className="border-t hover:bg-green-100">
-                  <td className="px-4 py-3">{index + 1}</td>
+                  <td className="px-4 py-3">{(page - 1) * limit + (index + 1)}</td>
                   <td className="px-4 py-3 capitalize">{txn.account.name}</td>
                   <td className="px-4 py-3 capitalize">{txn.type}</td>
                   <td className="px-4 py-3">{formatAmount(txn.amount)}</td>
@@ -306,6 +332,45 @@ export default function TransactionManager() {
               )}
             </tbody>
           </table>
+        </div>
+
+        <div className="flex justify-between items-center mt-6 text-sm text-gray-700 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+          <div className="flex items-center gap-2">
+            <select
+              value={limit}
+              onChange={(e) => {
+                setLimit(Number(e.target.value));
+                setPage(1);
+              }}
+              className="border border-green-300 bg-green-50 px-3 py-1.5 rounded-md outline-none focus:ring-2 focus:ring-green-500 transition-all font-medium"
+            >
+              <option value={10}>10 per page</option>
+              <option value={20}>20 per page</option>
+              <option value={50}>50 per page</option>
+              <option value={100}>100 per page</option>
+            </select>
+          </div>
+
+          <div className="font-medium text-gray-600">
+            page {page} of page {totalPages}
+          </div>
+
+          <div className="flex items-center gap-6">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="flex items-center gap-1 font-semibold text-green-700 hover:text-green-900 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors"
+            >
+              pre &lt;
+            </button>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages || totalPages === 0}
+              className="flex items-center gap-1 font-semibold text-green-700 hover:text-green-900 disabled:text-gray-300 disabled:cursor-not-allowed transition-colors"
+            >
+              next &gt;
+            </button>
+          </div>
         </div>
       </div>
 

@@ -8,7 +8,7 @@ interface LoadAuditParams {
     endDate?: string;
     page?: number;
     limit?: number;
-    user?: number;
+    userId?: number;
 }
 
 export const loadAudit = async (params: LoadAuditParams = {}): Promise<any> => {
@@ -23,6 +23,7 @@ export const loadAudit = async (params: LoadAuditParams = {}): Promise<any> => {
         if (params.endDate) query.append('endDate', params.endDate);
         if (params.page !== undefined) query.append('page', String(params.page));
         if (params.limit !== undefined) query.append('limit', String(params.limit));
+        if (params.userId !== undefined) query.append('userId', String(params.userId));
 
         const response = await fetch(`${BASE_URL}/audit-logs?${query.toString()}`, {
             method: 'GET',

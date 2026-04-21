@@ -45,8 +45,8 @@ export default function DashboardHome() {
   const getAccountArray = (type: "secretariat" | "project") => {
     return data?.data?.[type]
       ? Object.entries(data.data[type])
-          .map(([bank, currencies]) => ({ bank, currencies }))
-          .sort((a, b) => a.bank.localeCompare(b.bank)) // ✅ alphabetical
+        .map(([bank, currencies]) => ({ bank, currencies }))
+        .sort((a, b) => a.bank.localeCompare(b.bank)) // ✅ alphabetical
       : [];
   };
 
@@ -58,9 +58,6 @@ export default function DashboardHome() {
       1
     ).toISOString();
     const endDate = new Date().toISOString();
-    // now.getFullYear(),
-    // now.getMonth() + 1,
-    // 0
 
     return { startDate, endDate };
   };
@@ -111,7 +108,7 @@ export default function DashboardHome() {
                       key={account.id}
                       className="mb-5 space-y-3 border border-emerald-300 py-5 rounded-lg px-2 md:px-4 bg-emerald-50"
                     >
-                      <p className="text-sm text-gray-800 font-medium text-center">
+                      <p className="text-lg text-gray-800 font-medium text-center italic">
                         <span className="font-semibold">Bank:</span> {item.bank}{" "}
                         &nbsp;|&nbsp;
                         <span className="font-semibold">Name:</span>{" "}
@@ -120,46 +117,63 @@ export default function DashboardHome() {
                         {account.accountNumber}
                       </p>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-5">
-                        <BalanceCard
-                          amount={account.previousBalance}
-                          icon={<FaMoneyBillWave />}
-                          label="Prev Bal"
-                          currency={currency}
-                        />
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-fr">
+                        {(() => {
+                          const getSpan = (amount: any) => {
+                            const str = amount?.toString() || "";
+                            if (str.length > 15) return "lg:col-span-3 xl:col-span-3";
+                            if (str.length > 10) return "lg:col-span-2 xl:col-span-2";
+                            return "";
+                          };
 
-                        <BalanceCard
-                          amount={account.inflow}
-                          icon={<FaArrowDown />}
-                          label="Inflow"
-                          currency={currency}
-                          onClick={() => handleCardClick(account, "inflow")}
-                          month={new Date().toLocaleDateString("en-US", {
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        />
-                        <BalanceCard
-                          amount={account.outflow}
-                          icon={<FaArrowUp />}
-                          label="Outflow"
-                          currency={currency}
-                          onClick={() => handleCardClick(account, "outflow")}
-                          month={new Date().toLocaleDateString("en-US", {
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        />
-                        <BalanceCard
-                          amount={account.currentBalance}
-                          icon={<FaMoneyBillWave />}
-                          label="Cur Bal"
-                          currency={currency}
-                          month={new Date().toLocaleDateString("en-US", {
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        />
+                          return (
+                            <>
+                              <BalanceCard
+                                amount={account.previousBalance}
+                                icon={<FaMoneyBillWave />}
+                                label="Prev Bal"
+                                currency={currency}
+                                className={getSpan(account.previousBalance)}
+                              />
+
+                              <BalanceCard
+                                amount={account.inflow}
+                                icon={<FaArrowDown />}
+                                label="Inflow"
+                                currency={currency}
+                                onClick={() => handleCardClick(account, "inflow")}
+                                className={getSpan(account.inflow)}
+                                month={new Date().toLocaleDateString("en-US", {
+                                  month: "long",
+                                  year: "numeric",
+                                })}
+                              />
+                              <BalanceCard
+                                amount={account.outflow}
+                                icon={<FaArrowUp />}
+                                label="Outflow"
+                                currency={currency}
+                                onClick={() => handleCardClick(account, "outflow")}
+                                className={getSpan(account.outflow)}
+                                month={new Date().toLocaleDateString("en-US", {
+                                  month: "long",
+                                  year: "numeric",
+                                })}
+                              />
+                              <BalanceCard
+                                amount={account.currentBalance}
+                                icon={<FaMoneyBillWave />}
+                                label="Cur Bal"
+                                currency={currency}
+                                className={getSpan(account.currentBalance)}
+                                month={new Date().toLocaleDateString("en-US", {
+                                  month: "long",
+                                  year: "numeric",
+                                })}
+                              />
+                            </>
+                          );
+                        })()}
                       </div>
                     </div>
                   ))}
