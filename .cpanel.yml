@@ -1,9 +1,9 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/nggovern/repositories/fundapi
+    - export DEPLOYPATH=/home/nggovern/public_html/fundapi
 
-    - cd /home/nggovern/repositories/fundapi || exit 1
+    - cd /home/nggovern/public_html/fundapi || exit 1
 
     - /usr/local/bin/npm install
     - /usr/local/bin/npm run build
