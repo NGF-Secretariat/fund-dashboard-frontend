@@ -11,4 +11,4 @@ deployment:
     - /bin/rm -rf $DEPLOYPATH/*
 
     # adjust based on framework:
-    - /bin/cp -R build/* $DEPLOYPATH/
+    - /bin/cp -R out/* $DEPLOYPATH/
