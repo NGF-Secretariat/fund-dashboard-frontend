@@ -1,0 +1,12 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/nggovern/repositories/fundapi
+
+    - cd /home/nggovern/repositories/fundapi || exit 1
+
+    - /usr/local/bin/npm install
+    - /usr/local/bin/npm run build
+
+    # restart app (if using cPanel Node.js App)
+    - /bin/touch tmp/restart.txt
