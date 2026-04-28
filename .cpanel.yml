@@ -1,12 +1,14 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/nggovern/public_html/fundapi
-
-    - cd /home/nggovern/public_html/fundapi || exit 1
+    - cd /home/nggovern/repositories/fund-dashboard-frontend || exit 1
 
     - /usr/local/bin/npm install
     - /usr/local/bin/npm run build
 
-    # restart app (if using cPanel Node.js App)
-    - /bin/touch tmp/restart.txt
+    - export DEPLOYPATH=/home/nggovern/public_html/fundapi
+
+    - /bin/rm -rf $DEPLOYPATH/*
+
+    # adjust based on framework:
+    - /bin/cp -R build/* $DEPLOYPATH/
