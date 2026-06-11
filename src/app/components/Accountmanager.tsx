@@ -12,15 +12,13 @@ import { usePathname } from "next/navigation";
 import { loadBank } from "../lib/bank";
 import { Bank } from "./BankManager";
 import { loadCurrency } from "../lib/currency";
-// import { Currency } from "./CurrencyManager";
 import toast from "react-hot-toast";
 import { loadACategory } from "../lib/category";
 import { Category } from "./CategoryManager";
 import ConfirmPrompt from "./ConfirmPrompt";
 import Modal from "./Modal";
 import { Currency } from "./Currencymanager";
-import { FaMarsAndVenus } from "react-icons/fa6";
-import { FaClosedCaptioning, FaDotCircle, FaSlidersH } from "react-icons/fa";
+import { FaSlidersH } from "react-icons/fa";
 
 
 export interface Account {
@@ -71,7 +69,7 @@ export default function AccountManager() {
   const [dropdownOpenId, setDropdownOpenId] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const pathname = usePathname;
+  const pathname = usePathname();
   const [banks, setBanks] = useState<Bank[]>([]);
   const mounted = useRef(false);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -139,7 +137,7 @@ export default function AccountManager() {
     };
     document.addEventListener("mousedown", closeOnOutside);
     return () => document.removeEventListener("mousedown", closeOnOutside);
-  }, [pathname]);
+  }, [dropdownOpenId]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -162,11 +160,19 @@ export default function AccountManager() {
     try {
       if (editingId !== null) {
         const updated = await updateAccount(editingId, form);
-        toast.success("Account updated successfully");
+        if(updated){
+          toast.success("Account updated successfully")
+        }else{
+          toast.error("Failed to update account. Please try again.")
+        };
         setEditingId(null);
       } else {
         const newAccount = await createAccount(form);
-        toast.success("Account created successfully");
+        if(newAccount){
+          toast.success("Account created successfully");
+        }else{
+          toast.error("Failed to create account. Please try again.")
+        }
       }
       setForm({
         name: "",
@@ -365,7 +371,7 @@ export default function AccountManager() {
                 Account number
               </label>
               <input
-                type="text"
+                type="number"
                 name="accountNumber"
                 value={form.accountNumber}
                 onChange={handleChange}

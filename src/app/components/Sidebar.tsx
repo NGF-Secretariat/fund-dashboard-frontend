@@ -14,6 +14,7 @@ import {
   FaChevronRight,
   FaBars,
   FaWindowClose,
+  FaUserEdit,
 } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 import { checkLoggedIn } from "../lib/util";
@@ -54,19 +55,19 @@ export default function Sidebar({
       href: "/dashboard/account",
       icon: <FaWallet />,
       label: "Accounts",
-      roles: ["acct"],
+      roles: ["acct", "admin"],
     },
     {
       href: "/dashboard/currency",
       icon: <FaMoneyBillWave />,
       label: "Currencies",
-      roles: ["acct"],
+      roles: ["acct", "admin"],
     },
     {
       href: "/dashboard/category",
       icon: <FaListAlt />,
       label: "Categories",
-      roles: ["acct"],
+      roles: ["acct", "admin"],
     },
     {
       href: "/dashboard/transaction",
@@ -79,6 +80,12 @@ export default function Sidebar({
       icon: <FaClipboardCheck />,
       label: "Audit",
       roles: ["audit", "admin"],
+    },
+    {
+      href: "/dashboard/registration",
+      icon: <FaUserEdit />,
+      label: "Users",
+      roles: ["admin"],
     },
   ];
 
