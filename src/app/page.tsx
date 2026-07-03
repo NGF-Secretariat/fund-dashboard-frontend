@@ -22,6 +22,7 @@ export default function LoginPage() {
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
+      if (loading) return;
       const { username, password } = formData;
 
       if (!username || !password) {

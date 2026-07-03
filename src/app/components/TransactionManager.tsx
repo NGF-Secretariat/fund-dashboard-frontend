@@ -156,8 +156,13 @@ export default function TransactionManager() {
   };
 
   const handleSubmit = async () => {
-    if (!form.amount || !form.description) {
+    if (loading) return;
+    if (!form.accountId || !form.type || !form.amount || !form.description) {
       toast.error("All fields required");
+      return;
+    }
+    if (form.amount <= 0) {
+      toast.error("Amount must be greater than 0");
       return;
     }
 
@@ -168,10 +173,11 @@ export default function TransactionManager() {
         toast.success("Transaction updated successfully");
         setEditingId(null);
       } else {
-        const newTxn = await createTransaction(form);
+        await createTransaction(form);
         toast.success("Transaction added successfully");
       }
-      setForm({ accountId: 0, type: "inflow", amount: 0, description: "" });
+      setForm({ accountId: 0, type: "", amount: 0, description: "" });
+      setModalOpen(false);
       await fetchData();
     } catch (error) {
       toast.error("Failed to save transaction");
@@ -194,6 +200,7 @@ export default function TransactionManager() {
 
   const confirmDelete = async () => {
     if (editingId === null) return;
+    if (loading) return;
 
     setShowConfirm(false);
     setLoading(true);
@@ -397,6 +404,7 @@ export default function TransactionManager() {
                 onChange={handleChange}
                 className="border border-green-300 bg-green-50 px-3 py-2 rounded-md w-full focus:ring-2 focus:ring-green-500"
               >
+                <option value={0}>Select Account</option>
                 {accounts?.map((acc) => (
                   <option key={acc.id} value={acc.id}>
                     {acc.name}
@@ -447,12 +455,13 @@ export default function TransactionManager() {
               />
             </div>
           </div>
-          <div className="flex justify-end">
+           <div className="flex justify-end">
             <button
-              onClick={handleSubmit}
-              className="bg-textRed text-white px-4 py-2 rounded hover:bg-red-600"
+              type="submit"
+              disabled={loading}
+              className="bg-textRed text-white px-4 py-2 rounded hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {editingId ? "Update" : "Add"}
+              {loading ? "Saving..." : editingId ? "Update" : "Add"}
             </button>
           </div>
         </form>

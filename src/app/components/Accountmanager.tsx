@@ -150,8 +150,9 @@ export default function AccountManager() {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
     const { name, accountNumber, bankId, currencyCode, categoryId } = form;
-    if (!name || !accountNumber || !bankId || !categoryId) {
+    if (!name || !accountNumber || !bankId || !currencyCode || !categoryId) {
       toast.error("Please fill all fields");
       return;
     }
@@ -181,6 +182,7 @@ export default function AccountManager() {
         currencyCode: "",
         categoryId: 0,
       });
+      setModalOpen(false);
       await fetchAccount();
     } catch (error) {
       toast.error("Failed to save account. Please try again.");
@@ -206,6 +208,7 @@ export default function AccountManager() {
 
   const confirmDelete = async () => {
     if (editingId === null) return;
+    if (loading) return;
 
     setShowConfirm(false);
     setLoading(true);
@@ -432,10 +435,11 @@ export default function AccountManager() {
           </div>
           <div className="flex justify-end">
             <button
-              onClick={handleSubmit}
-              className="bg-textRed text-white px-4 py-2 rounded hover:bg-red-600"
+              type="submit"
+              disabled={loading}
+              className="bg-textRed text-white px-4 py-2 rounded hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {editingId ? "Update" : "Add"}
+              {loading ? "Saving..." : editingId ? "Update" : "Add"}
             </button>
           </div>
         </form>

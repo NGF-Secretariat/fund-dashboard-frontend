@@ -61,6 +61,7 @@ export default function BankTableManager() {
   }, [pathname]);
 
   const handleSubmit = async () => {
+    if (loading) return;
     if (!name.trim()) {
       toast.error("Bank name cannot be empty.");
       return;
@@ -95,6 +96,7 @@ export default function BankTableManager() {
 
   const confirmDelete = async () => {
     if (deleteId === null) return;
+    if (loading) return;
 
     setShowConfirm(false);
     setLoading(true);
@@ -231,9 +233,9 @@ export default function BankTableManager() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-green-600 px-4 py-2 rounded-md hover:bg-green-700"
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {editingId ? "Update" : "Add"}
+              {loading ? "Saving..." : editingId ? "Update" : "Add"}
             </button>
           </div>
         </form>

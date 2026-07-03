@@ -68,6 +68,7 @@ export default function CategoryManager() {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
     if (!form.name.trim()) {
       toast.error("Name is required");
       return;
@@ -84,6 +85,7 @@ export default function CategoryManager() {
         toast.success("Category created successfully");
       }
       setForm({ name: "" });
+      setModalOpen(false);
       await fetchData();
     } catch (error) {
       toast.error("Failed to save categories");
@@ -101,8 +103,9 @@ export default function CategoryManager() {
 
   const confirmDelete = async () => {
     if (editingId === null) return;
+    if (loading) return;
 
-    setShowConfirm(true);
+    setShowConfirm(false);
     setLoading(true);
     try {
       await deleteCategory(editingId);
@@ -237,10 +240,11 @@ export default function CategoryManager() {
           </div>
           <div className="flex justify-end">
             <button
-              onClick={handleSubmit}
-              className="bg-textRed text-white px-4 py-2 mt-6 rounded hover:bg-red-600"
+              type="submit"
+              disabled={loading}
+              className="bg-textRed text-white px-4 py-2 mt-6 rounded hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {editingId ? "Update" : "Add"}
+              {loading ? "Saving..." : editingId ? "Update" : "Add"}
             </button>
           </div>
         </form>

@@ -64,6 +64,7 @@ export default function CurrencyManager() {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
     if (!form.code || !form.name) {
       toast.error("All fields required");
       return;
@@ -80,6 +81,7 @@ export default function CurrencyManager() {
         toast.success("Currency created successfully");
       }
       setForm({ code: "", name: "" });
+      setModalOpen(false);
       await fetchData();
     } catch {
       toast.error("Failed to save currency");
@@ -97,6 +99,7 @@ export default function CurrencyManager() {
 
   const confirmDelete = async () => {
     if (editingId === null) return;
+    if (loading) return;
 
     setShowConfirm(false);
     setLoading(true);
@@ -238,10 +241,11 @@ export default function CurrencyManager() {
           </div>
           <div className="flex justify-end">
             <button
-              onClick={handleSubmit}
-              className="bg-textRed text-white px-4 py-2 rounded hover:bg-red-600"
+              type="submit"
+              disabled={loading}
+              className="bg-textRed text-white px-4 py-2 rounded hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {editingId ? "Update" : "Add"}
+              {loading ? "Saving..." : editingId ? "Update" : "Add"}
             </button>
           </div>
         </form>
