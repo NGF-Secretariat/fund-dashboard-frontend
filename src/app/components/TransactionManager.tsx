@@ -21,6 +21,7 @@ export interface Transaction {
   account: {
     id: number;
     name: string;
+    accountNumber?: string;
     currency: {
       id: number;
       code: string;
@@ -87,6 +88,9 @@ export default function TransactionManager() {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const mounted = useRef(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const selectDropdownRef = useRef<HTMLDivElement>(null);
+  const [selectDropdownOpen, setSelectDropdownOpen] = useState(false);
+  const [accountSearchQuery, setAccountSearchQuery] = useState("");
 
   const fetchData = async (p = page, l = limit) => {
     try {
@@ -140,6 +144,12 @@ export default function TransactionManager() {
       ) {
         setDropdownOpenId(null);
       }
+      if (
+        selectDropdownRef.current &&
+        !selectDropdownRef.current.contains(e.target as Node)
+      ) {
+        setSelectDropdownOpen(false);
+      }
     };
     document.addEventListener("mousedown", closeOutside);
     return () => document.removeEventListener("mousedown", closeOutside);
@@ -177,6 +187,8 @@ export default function TransactionManager() {
         toast.success("Transaction added successfully");
       }
       setForm({ accountId: 0, type: "", amount: 0, description: "" });
+      setAccountSearchQuery("");
+      setSelectDropdownOpen(false);
       setModalOpen(false);
       await fetchData();
     } catch (error) {
@@ -234,6 +246,15 @@ export default function TransactionManager() {
     }
   };
 
+  const selectedAccount = accounts.find((acc) => acc.id === form.accountId);
+  const filteredSelectAccounts = accounts.filter((acc) => {
+    const q = accountSearchQuery.toLowerCase();
+    return (
+      acc.name.toLowerCase().includes(q) ||
+      (acc.accountNumber && acc.accountNumber.toLowerCase().includes(q))
+    );
+  });
+
   const filteredTransactions = transactions;
 
   return (
@@ -250,6 +271,8 @@ export default function TransactionManager() {
                 description: "",
               });
               setEditingId(null);
+              setAccountSearchQuery("");
+              setSelectDropdownOpen(false);
               setModalOpen(true);
             }}
             className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
@@ -282,6 +305,7 @@ export default function TransactionManager() {
               <tr>
                 <th className="px-4 py-3 text-gray-700 text-left">S/N</th>
                 <th className="px-4 py-3 text-gray-700">Account</th>
+                <th className="px-4 py-3 text-gray-700">Account Number</th>
                 <th className="px-4 py-3 text-gray-700">Type</th>
                 <th className="px-4 py-3 text-gray-700">Amount</th>
                 <th className="px-4 py-3 text-gray-700">Description</th>
@@ -293,6 +317,7 @@ export default function TransactionManager() {
                 <tr key={txn.id} className="border-t hover:bg-green-100">
                   <td className="px-4 py-3">{(page - 1) * limit + (index + 1)}</td>
                   <td className="px-4 py-3 capitalize">{txn.account.name}</td>
+                  <td className="px-4 py-3 font-mono">{txn.account.accountNumber || "N/A"}</td>
                   <td className="px-4 py-3 capitalize">{txn.type}</td>
                   <td className="px-4 py-3">{formatAmount(txn.amount)}</td>
                   <td className="px-4 py-3 capitalize">{txn.description}</td>
@@ -332,7 +357,7 @@ export default function TransactionManager() {
               ))}
               {filteredTransactions?.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="text-center py-4 text-gray-500">
+                  <td colSpan={7} className="text-center py-4 text-gray-500">
                     No transactions found.
                   </td>
                 </tr>
@@ -394,23 +419,65 @@ export default function TransactionManager() {
           className="space-y-4 text-black"
         >
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-6">
-            <div>
+            <div ref={selectDropdownRef} className="relative">
               <label className="block text-sm font-medium mb-1">
                 Select Account
               </label>
-              <select
-                name="accountId"
-                value={form.accountId}
-                onChange={handleChange}
-                className="border border-green-300 bg-green-50 px-3 py-2 rounded-md w-full focus:ring-2 focus:ring-green-500"
+              <div 
+                className="border border-green-300 bg-green-50 px-3 py-2.5 rounded-md w-full focus-within:ring-2 focus-within:ring-green-500 cursor-pointer flex justify-between items-center transition-all hover:bg-green-100/50"
+                onClick={() => setSelectDropdownOpen(!selectDropdownOpen)}
               >
-                <option value={0}>Select Account</option>
-                {accounts?.map((acc) => (
-                  <option key={acc.id} value={acc.id}>
-                    {acc.name}
-                  </option>
-                ))}
-              </select>
+                <span className="text-sm">
+                  {selectedAccount ? `${selectedAccount.name} (${selectedAccount.accountNumber})` : "Select Account"}
+                </span>
+                <span className="text-gray-500 text-xs">▼</span>
+              </div>
+              
+              {selectDropdownOpen && (
+                <div className="absolute left-0 right-0 mt-1 bg-white border border-green-800 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto p-2 transition-all">
+                  <input
+                    type="text"
+                    placeholder="Search by name or account number..."
+                    value={accountSearchQuery}
+                    onChange={(e) => setAccountSearchQuery(e.target.value)}
+                    className="w-full border border-green-300 bg-green-50 px-2 py-1.5 rounded-md mb-2 focus:ring-2 focus:ring-green-500 outline-none text-xs text-black"
+                    onClick={(e) => e.stopPropagation()}
+                    autoFocus
+                  />
+                  <div className="space-y-1">
+                    <div
+                      onClick={() => {
+                        setForm(prev => ({ ...prev, accountId: 0 }));
+                        setSelectDropdownOpen(false);
+                        setAccountSearchQuery("");
+                      }}
+                      className="px-2 py-1.5 rounded hover:bg-green-100 cursor-pointer text-xs text-gray-500"
+                    >
+                      Select Account
+                    </div>
+                    {filteredSelectAccounts?.map((acc) => (
+                      <div
+                        key={acc.id}
+                        onClick={() => {
+                          setForm(prev => ({ ...prev, accountId: acc.id }));
+                          setSelectDropdownOpen(false);
+                          setAccountSearchQuery("");
+                        }}
+                        className={`px-2 py-1.5 rounded hover:bg-green-600 hover:text-white cursor-pointer text-xs text-black transition-colors ${
+                          form.accountId === acc.id ? "bg-green-100 font-semibold" : ""
+                        }`}
+                      >
+                        {acc.name} ({acc.accountNumber})
+                      </div>
+                    ))}
+                    {filteredSelectAccounts?.length === 0 && (
+                      <div className="px-2 py-1.5 text-xs text-gray-400 text-center">
+                        No accounts found
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
