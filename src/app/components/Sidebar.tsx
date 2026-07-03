@@ -15,6 +15,7 @@ import {
   FaBars,
   FaWindowClose,
   FaUserEdit,
+  FaFilePdf,
 } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 import { checkLoggedIn } from "../lib/util";
@@ -74,6 +75,12 @@ export default function Sidebar({
       icon: <FaClipboardCheck />,
       label: "Transaction",
       roles: ["acct", "audit", "admin"],
+    },
+    {
+      href: "/dashboard/report",
+      icon: <FaFilePdf />,
+      label: "Reports",
+      roles: ["user", "acct", "audit", "admin"],
     },
     {
       href: "/dashboard/audit",

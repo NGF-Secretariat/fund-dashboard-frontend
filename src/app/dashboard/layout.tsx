@@ -30,14 +30,14 @@ export default function DashboardLayout({
       <Toaster position="top-right" />
 
       <div
-        className="flex min-h-screen bg-ngfGreenLight transition-all duration-300 ease-in-out"
+        className="flex min-h-screen bg-ngfGreenLight transition-all duration-300 ease-in-out print:bg-white"
         style={{ "--sidebar-width": `${sidebarWidth}px` } as any}
       >
         {/* Sidebar for desktop */}
         <div
           aria-label="sidebar-wrapper"
           className={`
-            fixed left-0 top-0 h-full z-10 transition-all duration-300 bg-white shadow
+            fixed left-0 top-0 h-full z-10 transition-all duration-300 bg-white shadow print:hidden
             ${
               mobileOpen ? "translate-x-0" : "-translate-x-full"
             } md:translate-x-0
@@ -52,12 +52,14 @@ export default function DashboardLayout({
           />
         </div>
 
-        <div className="flex flex-col flex-1 transition-all duration-300 ease-in-out md:ml-[var(--sidebar-width)]">
-          <Topbar
-            collapsed={collapsed}
-            toggleMobileMenu={() => setMobileOpen((o) => !o)}
-          />
-          <main className="p-2">{children}</main>
+        <div className="flex flex-col flex-1 transition-all duration-300 ease-in-out md:ml-[var(--sidebar-width)] print:ml-0">
+          <div className="print:hidden">
+            <Topbar
+              collapsed={collapsed}
+              toggleMobileMenu={() => setMobileOpen((o) => !o)}
+            />
+          </div>
+          <main className="p-2 print:p-0">{children}</main>
         </div>
       </div>
     </>
