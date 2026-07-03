@@ -66,12 +66,29 @@ export function formatAmount(amount: string | number) {
   }).format(Number(amount));
 }
 
+export function formatInputCurrency(val: string) {
+  if (!val) return "";
+  let clean = val.replace(/[^0-9.]/g, "");
+  const parts = clean.split(".");
+  if (parts.length > 2) {
+    clean = parts[0] + "." + parts.slice(1).join("");
+  }
+  const [integerPart, decimalPart] = clean.split(".");
+  const formattedInteger = integerPart
+    ? new Intl.NumberFormat("en-US").format(Number(integerPart))
+    : "";
+  if (decimalPart !== undefined) {
+    return `${formattedInteger}.${decimalPart.slice(0, 2)}`;
+  }
+  return formattedInteger;
+}
+
 export default function TransactionManager() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [form, setForm] = useState({
     accountId: 0,
     type: "",
-    amount: 0,
+    amount: "",
     description: "",
   });
   const [search, setSearch] = useState("");
@@ -161,7 +178,12 @@ export default function TransactionManager() {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === "amount" || name === "accountId" ? Number(value) : value,
+      [name]:
+        name === "accountId"
+          ? Number(value)
+          : name === "amount"
+          ? formatInputCurrency(value)
+          : value,
     }));
   };
 
@@ -171,22 +193,27 @@ export default function TransactionManager() {
       toast.error("All fields required");
       return;
     }
-    if (form.amount <= 0) {
+    const rawAmount = Number(String(form.amount).replace(/[^0-9.]/g, ""));
+    if (isNaN(rawAmount) || rawAmount <= 0) {
       toast.error("Amount must be greater than 0");
       return;
     }
 
     setLoading(true);
     try {
+      const payload = {
+        ...form,
+        amount: rawAmount,
+      };
       if (editingId !== null) {
-        await updateTransaction(editingId, form);
+        await updateTransaction(editingId, payload);
         toast.success("Transaction updated successfully");
         setEditingId(null);
       } else {
-        await createTransaction(form);
+        await createTransaction(payload);
         toast.success("Transaction added successfully");
       }
-      setForm({ accountId: 0, type: "", amount: 0, description: "" });
+      setForm({ accountId: 0, type: "", amount: "", description: "" });
       setAccountSearchQuery("");
       setSelectDropdownOpen(false);
       setModalOpen(false);
@@ -202,7 +229,7 @@ export default function TransactionManager() {
     setForm({
       accountId: Number(txn.account.id),
       type: txn.type,
-      amount: Number(txn.amount),
+      amount: formatInputCurrency(String(txn.amount)),
       description: txn.description,
     });
     setEditingId(txn.id);
@@ -267,7 +294,7 @@ export default function TransactionManager() {
               setForm({
                 accountId: 0,
                 type: "",
-                amount: 0,
+                amount: "",
                 description: "",
               });
               setEditingId(null);
@@ -499,7 +526,7 @@ export default function TransactionManager() {
             <div>
               <label className="block text-sm font-medium mb-1">Amount</label>
               <input
-                type="number"
+                type="text"
                 name="amount"
                 value={form.amount}
                 onChange={handleChange}
