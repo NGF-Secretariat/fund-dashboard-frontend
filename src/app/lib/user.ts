@@ -82,7 +82,7 @@ export const resetPassword = async (form: {
     password: string;
 }): Promise<any> => {
     try {
-        const response = await fetch(`${BASE_URL}/auth/register`, {
+        const response = await fetch(`${BASE_URL}/auth/reset-password`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ export const resetPassword = async (form: {
         }
 
         if (!response.ok) {
-            return { success: false, message: data?.message || 'Failed to create user.' };
+            return { success: false, message: data?.message || 'Failed to reset password.' };
         }
 
         return { success: true, data };
@@ -152,7 +152,7 @@ export const createUser = async (editedName: string): Promise<any> => {
     }
 };
 
-export const updateUser = async (id: string | number, editedName: string): Promise<any> => {
+export const updateUser = async (id: string | number, updates: { name?: string; role?: string }): Promise<any> => {
     try {
         let token = '';
         if (typeof window !== 'undefined') {
@@ -165,7 +165,7 @@ export const updateUser = async (id: string | number, editedName: string): Promi
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ name: editedName }),
+            body: JSON.stringify(updates),
         });
 
         let data;
