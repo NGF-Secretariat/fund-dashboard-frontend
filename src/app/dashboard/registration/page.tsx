@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { register, resetPassword, loadUser, updateUser } from "@/app/lib/user";
+import { register, resetPassword, loadUser, updateUser, deleteUser } from "@/app/lib/user";
 import ConfirmPrompt from "@/app/components/ConfirmPrompt";
 
 type Role = "admin" | "audit" | "user" | "acct";
@@ -120,6 +120,29 @@ export default function RegisterPage() {
     // Scroll to top to focus on the form
     window.scrollTo({ top: 0, behavior: "smooth" });
     toast.success(`Prefilled email: ${email}`);
+  };
+
+  const handleDeleteUserClick = (userId: number | string, userName: string) => {
+    setConfirmConfig({
+      message: `Are you sure you want to permanently delete user "${userName}"? This action cannot be undone.`,
+      onConfirm: async () => {
+        setLoading(true);
+        try {
+          const res = await deleteUser(userId);
+          if (res.success) {
+            toast.success(`User "${userName}" deleted successfully`);
+            fetchUsers();
+          } else {
+            toast.error(res.message || "Failed to delete user");
+          }
+        } catch {
+          toast.error("Failed to delete user");
+        } finally {
+          setLoading(false);
+          setConfirmConfig(null);
+        }
+      }
+    });
   };
 
   const validate = (): boolean => {
@@ -281,6 +304,8 @@ export default function RegisterPage() {
         return "bg-emerald-50 text-emerald-700 border border-emerald-100";
       case "audit":
         return "bg-sky-50 text-sky-700 border border-sky-100";
+      case "user":
+        return "bg-yellow-50 text-yellow-700 border border-yellow-700";
       default:
         return "bg-gray-50 text-gray-700 border border-gray-100";
     }
@@ -658,6 +683,17 @@ export default function RegisterPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                       </svg>
                       Reset Pass
+                    </button>
+
+                    <button
+                      onClick={() => handleDeleteUserClick(user.id, user.name)}
+                      className="mt-4 flex items-center gap-1.5 text-xs bg-red-600 hover:bg-red-700 text-white font-medium px-3.5 py-1.5 rounded-md transition-all shadow-sm cursor-pointer hover:shadow"
+                      title="Delete user account"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Delete
                     </button>
                   </div>
                 </div>
