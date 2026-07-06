@@ -182,8 +182,8 @@ export default function TransactionManager() {
         name === "accountId"
           ? Number(value)
           : name === "amount"
-          ? formatInputCurrency(value)
-          : value,
+            ? formatInputCurrency(value)
+            : value,
     }));
   };
 
@@ -331,11 +331,12 @@ export default function TransactionManager() {
             <thead className="bg-green-100">
               <tr>
                 <th className="px-4 py-3 text-gray-700 text-left">S/N</th>
-                <th className="px-4 py-3 text-gray-700">Account</th>
+                <th className="px-4 py-3 text-gray-700">Account name</th>
                 <th className="px-4 py-3 text-gray-700">Account Number</th>
                 <th className="px-4 py-3 text-gray-700">Type</th>
                 <th className="px-4 py-3 text-gray-700">Amount</th>
                 <th className="px-4 py-3 text-gray-700">Description</th>
+                <th className="px-4 py-3 text-gray-700">Date</th>
                 <th className="px-4 py-3 text-gray-700 text-center">Action</th>
               </tr>
             </thead>
@@ -348,6 +349,11 @@ export default function TransactionManager() {
                   <td className="px-4 py-3 capitalize">{txn.type}</td>
                   <td className="px-4 py-3">{formatAmount(txn.amount)}</td>
                   <td className="px-4 py-3 capitalize">{txn.description}</td>
+                  <td className="px-4 py-3 capitalize"> {new Date(txn.createdAt).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}</td>
                   <td className="px-2 py-3 relative text-center">
                     <button
                       onClick={() => toggleDropdown(txn.id)}
@@ -450,7 +456,7 @@ export default function TransactionManager() {
               <label className="block text-sm font-medium mb-1">
                 Select Account
               </label>
-              <div 
+              <div
                 className="border border-green-300 bg-green-50 px-3 py-2.5 rounded-md w-full focus-within:ring-2 focus-within:ring-green-500 cursor-pointer flex justify-between items-center transition-all hover:bg-green-100/50"
                 onClick={() => setSelectDropdownOpen(!selectDropdownOpen)}
               >
@@ -459,7 +465,7 @@ export default function TransactionManager() {
                 </span>
                 <span className="text-gray-500 text-xs">▼</span>
               </div>
-              
+
               {selectDropdownOpen && (
                 <div className="absolute left-0 right-0 mt-1 bg-white border border-green-800 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto p-2 transition-all">
                   <input
@@ -490,9 +496,8 @@ export default function TransactionManager() {
                           setSelectDropdownOpen(false);
                           setAccountSearchQuery("");
                         }}
-                        className={`px-2 py-1.5 rounded hover:bg-green-600 hover:text-white cursor-pointer text-xs text-black transition-colors ${
-                          form.accountId === acc.id ? "bg-green-100 font-semibold" : ""
-                        }`}
+                        className={`px-2 py-1.5 rounded hover:bg-green-600 hover:text-white cursor-pointer text-xs text-black transition-colors ${form.accountId === acc.id ? "bg-green-100 font-semibold" : ""
+                          }`}
                       >
                         {acc.name} ({acc.accountNumber})
                       </div>
@@ -549,7 +554,7 @@ export default function TransactionManager() {
               />
             </div>
           </div>
-           <div className="flex justify-end">
+          <div className="flex justify-end">
             <button
               type="submit"
               disabled={loading}
